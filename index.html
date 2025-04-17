@@ -1,63 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Template • TodoMVC</title>
-		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
-		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+		<link rel="stylesheet" href="node_modules/todomvc-common/base.css" />
+		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css" />
 		<!-- CSS overrides - remove if you don't need it -->
-		<link rel="stylesheet" href="css/app.css">
+		<link rel="stylesheet" href="css/app.css" />
+		<script
+			defer
+			src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+		></script>
 	</head>
-	<body>
+	<body x-data="todoApp">
 		<section class="todoapp">
 			<header class="header">
 				<h1>todos</h1>
-				<input class="new-todo" placeholder="What needs to be done?" autofocus>
+				<input
+					@keyup.enter="addTodo"
+					x-model="newTodo"
+					class="new-todo"
+					placeholder="What needs to be done?"
+					autofocus
+				/>
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
-			<section class="main">
-				<input id="toggle-all" class="toggle-all" type="checkbox">
+			<section class="main" x-show="todos.length">
+				<input
+					id="toggle-all"
+					class="toggle-all"
+					type="checkbox"
+					:checked="completedTodos.length === todos.length"
+					@click="toggleAllTodos"
+				/>
 				<label for="toggle-all">Mark all as complete</label>
 				<ul class="todo-list">
 					<!-- These are here just to show the structure of the list items -->
 					<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-					<li class="completed">
-						<div class="view">
-							<input class="toggle" type="checkbox" checked>
-							<label>Taste JavaScript</label>
-							<button class="destroy"></button>
-						</div>
-						<input class="edit" value="Create a TodoMVC template">
-					</li>
-					<li>
-						<div class="view">
-							<input class="toggle" type="checkbox">
-							<label>Buy a unicorn</label>
-							<button class="destroy"></button>
-						</div>
-						<input class="edit" value="Rule the web">
-					</li>
+					<template x-for="todo of fetchTodos">
+						<li
+							:class="todo.completed ? 'completed' : (todo.editing && 'editing')"
+						>
+							<div class="view">
+								<input
+									class="toggle"
+									type="checkbox"
+									:checked="todo.completed"
+									@click="toggleComplete(todo)"
+								/>
+								<label
+									@dblclick="todo.editing = true"
+									x-text="todo.body"
+								></label>
+								<button
+									type="button"
+									class="destroy"
+									@click="deleteTodo(todo.id)"
+								></button>
+							</div>
+							<input
+								type="text"
+								class="edit"
+								x-model="todo.editCache"
+								@keyup.enter="editTodo(todo)"
+								@click.outside="cancelEdit(todo)"
+							/>
+						</li>
+					</template>
 				</ul>
 			</section>
 			<!-- This footer should be hidden by default and shown when there are todos -->
-			<footer class="footer">
+			<footer class="footer" x-show="todos.length">
 				<!-- This should be `0 items left` by default -->
-				<span class="todo-count"><strong>0</strong> item left</span>
+				<span class="todo-count"
+					><strong x-text="activeTodos.length"></strong> item<span
+						x-show="activeTodos.length > 1"
+						>s</span
+					>
+					left</span
+				>
 				<!-- Remove this if you don't implement routing -->
 				<ul class="filters">
-					<li>
-						<a class="selected" href="#/">All</a>
-					</li>
-					<li>
-						<a href="#/active">Active</a>
-					</li>
-					<li>
-						<a href="#/completed">Completed</a>
-					</li>
+					<template x-for="tab in ['', 'active', 'completed']">
+						<li>
+							<a
+								style="cursor: pointer; text-transform: capitalize;"
+								:class="tab === activeTab && 'selected'"
+								type="button"
+								@click="activeTab = tab"
+								x-text="tab === '' ? 'All' : tab"
+							></a>
+						</li>
+					</template>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button class="clear-completed">Clear completed</button>
+				<button class="clear-completed" @click="clearCompletedTodos">
+					Clear completed
+				</button>
 			</footer>
 		</section>
 		<footer class="info">
@@ -65,11 +105,15 @@
 			<!-- Remove the below line ↓ -->
 			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
 			<!-- Change this out with your name and url ↓ -->
-			<p>Created by <a href="http://todomvc.com">you</a></p>
+			<p>
+				Created by <a href="https://abdulbakisuraj.com">Abdulbaki Suraj</a> with
+				AlpineJS
+			</p>
 			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 		</footer>
 		<!-- Scripts here. Don't remove ↓ -->
 		<script src="node_modules/todomvc-common/base.js"></script>
 		<script src="js/app.js"></script>
+		<script src="js/todos.js"></script>
 	</body>
 </html>
