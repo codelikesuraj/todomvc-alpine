@@ -3,7 +3,11 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Template • TodoMVC</title>
+		<title>TodoMVC with Alpine by Abdulbaki Suraj</title>
+		<meta
+			name="description"
+			content="A copy of todomvc.com made with AlpineJS by Abdulbaki Suraj"
+		/>
 		<link rel="stylesheet" href="node_modules/todomvc-common/base.css" />
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css" />
 		<!-- CSS overrides - remove if you don't need it -->
@@ -85,7 +89,7 @@
 					<template x-for="tab in ['', 'active', 'completed']">
 						<li>
 							<a
-								style="cursor: pointer; text-transform: capitalize;"
+								style="cursor: pointer; text-transform: capitalize"
 								:class="tab === activeTab && 'selected'"
 								type="button"
 								@click="activeTab = tab"
